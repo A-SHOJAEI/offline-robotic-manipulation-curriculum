@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "offline-robotic-manipulation-curriculum"
+version = "0.1.0"
+description = "Curriculum learning framework for offline RL in robotic manipulation"
+authors = [{name = "Alireza Shojaei"}]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["reinforcement-learning", "offline-rl", "robotics", "curriculum-learning"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/alirezashojaei/offline-robotic-manipulation-curriculum"
+
+[project.scripts]
+train-curriculum = "offline_robotic_manipulation_curriculum.scripts.train:main"
+evaluate-curriculum = "offline_robotic_manipulation_curriculum.scripts.evaluate:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=src/offline_robotic_manipulation_curriculum --cov-report=html --cov-report=term"
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310']
+
+[tool.isort]
+profile = "black"
+line_length = 100

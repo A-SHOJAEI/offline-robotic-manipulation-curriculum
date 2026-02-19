@@ -1,0 +1,118 @@
+# Curriculum Configuration
+curriculum:
+  stages:
+    - name: "pen-human"
+      env_name: "pen-human-v1"
+      difficulty: 1
+      min_episodes: 1000
+      success_threshold: 0.4
+    - name: "door-human"
+      env_name: "door-human-v1"
+      difficulty: 2
+      min_episodes: 1000
+      success_threshold: 0.5
+    - name: "kitchen-partial"
+      env_name: "kitchen-partial-v0"
+      difficulty: 3
+      min_episodes: 1500
+      success_threshold: 0.55
+    - name: "antmaze-large"
+      env_name: "antmaze-large-diverse-v2"
+      difficulty: 4
+      min_episodes: 2000
+      success_threshold: 0.65
+
+  scheduling:
+    mode: "uncertainty_based"
+    uncertainty_threshold: 0.15
+    min_stage_epochs: 10
+    max_stage_epochs: 50
+    progression_patience: 5
+
+# Model Configuration
+model:
+  architecture: "cql"
+  hidden_dims: [256, 256, 256]
+  activation: "relu"
+  dropout: 0.1
+  ensemble_size: 5
+
+  cql:
+    alpha: 5.0
+    min_q_weight: 5.0
+    lagrange_threshold: 10.0
+    use_lagrange: true
+
+  bc:
+    enabled: true
+    warmstart_epochs: 20
+    learning_rate: 0.0003
+
+# Training Configuration
+training:
+  total_epochs: 50
+  batch_size: 256
+  buffer_size: 1000000
+  learning_rate: 0.0003
+  gamma: 0.99
+  tau: 0.005
+  target_update_freq: 2
+
+  optimizer:
+    type: "adam"
+    weight_decay: 0.0001
+    betas: [0.9, 0.999]
+
+  scheduler:
+    type: "cosine"
+    warmup_epochs: 10
+    min_lr: 0.00001
+
+# Evaluation Configuration
+evaluation:
+  eval_episodes: 10
+  eval_freq: 10
+  deterministic: true
+  save_video: false
+  metrics:
+    - "normalized_return"
+    - "success_rate"
+    - "average_reward"
+    - "policy_uncertainty"
+    - "q_value_distribution"
+
+# Data Configuration
+data:
+  cache_dir: "./data/cache"
+  preload_all: false
+  normalize_observations: true
+  normalize_rewards: false
+  reward_scale: 1.0
+
+# System Configuration
+system:
+  seed: 42
+  device: "cpu"
+  num_workers: 4
+  use_gpu: false
+  mixed_precision: false
+
+  checkpointing:
+    save_dir: "./checkpoints"
+    save_freq: 10
+    keep_last_n: 5
+    save_best: true
+
+  logging:
+    log_dir: "./logs"
+    log_freq: 1
+    use_mlflow: false
+    use_tensorboard: true
+    experiment_name: "curriculum_cql"
+    run_name: null
+
+# Hyperparameter ranges for ablation studies
+ablation:
+  cql_alpha: [1.0, 5.0, 10.0]
+  ensemble_sizes: [3, 5, 7]
+  curriculum_modes: ["uncertainty_based", "fixed_schedule", "performance_based"]
