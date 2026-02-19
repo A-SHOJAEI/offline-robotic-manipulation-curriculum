@@ -65,6 +65,7 @@ Thumbs.db
 
 # Results
 results/
+!results/results.json
 outputs/
 !outputs/training_results.json
 wandb/

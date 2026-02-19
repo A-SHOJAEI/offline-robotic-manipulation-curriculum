@@ -1,0 +1,128 @@
+{
+  "experiment": {
+    "name": "offline-robotic-manipulation-curriculum",
+    "algorithm": "CQL with Q-ensemble",
+    "curriculum_scheduler": "uncertainty_based",
+    "seed": 42,
+    "device": "cpu",
+    "total_training_time_seconds": 79,
+    "date": "2026-02-19"
+  },
+  "training_config": {
+    "total_epochs": 200,
+    "epochs_per_stage": 50,
+    "batch_size": 256,
+    "learning_rate": 3e-4,
+    "optimizer": "Adam",
+    "scheduler": "cosine_with_warmup",
+    "warmup_epochs": 10,
+    "bc_warmstart_epochs": 20,
+    "cql_alpha": 5.0,
+    "lagrange_threshold": 10.0
+  },
+  "model": {
+    "architecture": "CQL with Q-ensemble",
+    "hidden_dims": [256, 256, 256],
+    "activation": "ReLU",
+    "dropout": 0.1,
+    "ensemble_size": 5
+  },
+  "curriculum_stages": {
+    "stage_1": {
+      "task": "pen-human",
+      "environment": "pen-human-v1",
+      "difficulty": 1,
+      "description": "Dexterous pen rotation",
+      "bc_final_loss": 1.2539,
+      "final_metrics": {
+        "total_loss": -7.6145,
+        "bellman_loss": 0.2646,
+        "cql_penalty": 2.2359,
+        "current_q": 0.1180
+      },
+      "evaluations": [
+        {"epoch": 10, "avg_return": -0.25, "std": 0.63, "success_rate": 0.00},
+        {"epoch": 20, "avg_return": 0.07, "std": 0.63, "success_rate": 0.10},
+        {"epoch": 30, "avg_return": 0.38, "std": 0.99, "success_rate": 0.00},
+        {"epoch": 40, "avg_return": 0.22, "std": 0.50, "success_rate": 0.10},
+        {"epoch": 50, "avg_return": -0.28, "std": 1.08, "success_rate": 0.30}
+      ]
+    },
+    "stage_2": {
+      "task": "door-human",
+      "environment": "door-human-v1",
+      "difficulty": 2,
+      "description": "Manipulator door interaction",
+      "bc_final_loss": 1.2374,
+      "final_metrics": {
+        "total_loss": -7.6745,
+        "bellman_loss": 0.2322,
+        "cql_penalty": 2.2087,
+        "current_q": 0.1263
+      },
+      "evaluations": [
+        {"epoch": 60, "avg_return": 0.00, "std": 1.57, "success_rate": 0.10},
+        {"epoch": 70, "avg_return": 0.04, "std": 1.18, "success_rate": 0.10},
+        {"epoch": 80, "avg_return": 0.01, "std": 0.94, "success_rate": 0.00},
+        {"epoch": 90, "avg_return": -0.42, "std": 1.18, "success_rate": 0.00},
+        {"epoch": 100, "avg_return": 0.26, "std": 0.60, "success_rate": 0.00}
+      ]
+    },
+    "stage_3": {
+      "task": "kitchen-partial",
+      "environment": "kitchen-partial-v0",
+      "difficulty": 3,
+      "description": "Multi-subtask kitchen environment",
+      "bc_final_loss": 1.1729,
+      "final_metrics": {
+        "total_loss": -7.5631,
+        "bellman_loss": 0.2629,
+        "cql_penalty": 2.2881,
+        "current_q": 0.0385
+      },
+      "evaluations": [
+        {"epoch": 110, "avg_return": 0.00, "std": 0.96, "success_rate": 0.20},
+        {"epoch": 120, "avg_return": -0.44, "std": 0.74, "success_rate": 0.10},
+        {"epoch": 130, "avg_return": -0.10, "std": 0.56, "success_rate": 0.10},
+        {"epoch": 140, "avg_return": -0.17, "std": 0.91, "success_rate": 0.10},
+        {"epoch": 150, "avg_return": -0.65, "std": 1.26, "success_rate": 0.00}
+      ]
+    },
+    "stage_4": {
+      "task": "antmaze-large",
+      "environment": "antmaze-large-diverse-v2",
+      "difficulty": 4,
+      "description": "Large maze locomotion planning",
+      "bc_final_loss": 1.1818,
+      "final_metrics": {
+        "total_loss": -7.6005,
+        "bellman_loss": 0.2531,
+        "cql_penalty": 2.2610,
+        "current_q": 0.1188
+      },
+      "evaluations": [
+        {"epoch": 160, "avg_return": 0.18, "std": 1.19, "success_rate": 0.00},
+        {"epoch": 170, "avg_return": -0.02, "std": 0.83, "success_rate": 0.00},
+        {"epoch": 180, "avg_return": 0.12, "std": 0.69, "success_rate": 0.10},
+        {"epoch": 190, "avg_return": 0.19, "std": 1.09, "success_rate": 0.00},
+        {"epoch": 200, "avg_return": -0.39, "std": 0.77, "success_rate": 0.10}
+      ]
+    }
+  },
+  "final_evaluation": {
+    "epoch": 200,
+    "avg_return": -0.39,
+    "std": 0.77,
+    "success_rate": 0.10,
+    "policy_uncertainty": 0.0681,
+    "total_loss": -7.6005,
+    "bellman_loss": 0.2531,
+    "cql_penalty": 2.2610,
+    "current_q": 0.1188
+  },
+  "checkpoints": {
+    "best_model": "models/best_model.pt",
+    "final_model": "models/final_model.pt"
+  },
+  "notes": "Trained with synthetic demonstration data. D4RL was not available in the training environment. Results validate the training pipeline and curriculum progression mechanics but do not reflect performance on real D4RL benchmark datasets."
+}
